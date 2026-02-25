@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Sign Up</title>
+</head>
+<body>
+
+<div th:replace="~{base :: layout(~{::section})}">
+
+  <section class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+
+          <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert" role="alert">
+            <p class="text-center" th:text="${session.message.content}"></p>
+          </div>
+
+          <div class="card-header bg-primary text-white text-center">
+            <h3 class="mb-0">Register Account</h3>
+          </div>
+          <div class="card-body">
+
+            <form th:action="@{/do_register}" th:object="${user}" method="post">
+
+              <div class="mb-3">
+                <label for="nameField" class="form-label">Your Name</label>
+                <input type="text" th:field="*{name}" class="form-control" id="nameField" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="emailField" class="form-label">Email Address</label>
+                <input type="email" th:field="*{email}" class="form-control" id="emailField" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="passwordField" class="form-label">Password</label>
+                <input type="password" th:field="*{password}" class="form-control" id="passwordField" required>
+              </div>
+
+              <div class="mb-3 form-check">
+                <input type="checkbox" name="agreement" class="form-check-input" id="agreement">
+                <label class="form-check-label" for="agreement">I agree to the terms and conditions</label>
+              </div>
+
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

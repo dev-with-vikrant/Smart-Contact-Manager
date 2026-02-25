@@ -1,0 +1,14 @@
+<div class="card" xmlns:th="http://www.w3.org/1999/xhtml">
+  <div class="card-body">
+    <h1 class="text-center">Your Contacts</h1>
+    <table class="table">
+      <thead><tr>...</tr></thead>
+      <tbody>
+      <tr th:each="c : ${contacts}">
+        <td th:text="${c.name}"></td>
+        <td th:text="${c.email}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
