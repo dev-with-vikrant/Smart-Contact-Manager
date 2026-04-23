@@ -4,7 +4,7 @@ package com.smart.smartcontactmanager.Security;
 //}
 
 
-import com.smart.smartcontactmanager.entities.user;
+import com.smart.smartcontactmanager.entities.User;
 import com.smart.smartcontactmanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        user user = userRepository.findByEmail(username)
+        User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
         return new CustomUserDetails(user);
     }

@@ -17,7 +17,7 @@ public class contact {
     private String description;
 
     @ManyToOne
-    private user user;
+    private User user;
 
     public String getName() {
         return name;
@@ -67,11 +67,11 @@ public class contact {
         this.description = description;
     }
 
-    public user getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(user user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

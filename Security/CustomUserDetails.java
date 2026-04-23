@@ -1,6 +1,6 @@
 package com.smart.smartcontactmanager.Security;
 
-import com.smart.smartcontactmanager.entities.user;
+import com.smart.smartcontactmanager.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
 
-    private user users;
+    private User users;
 
-    public CustomUserDetails(user user) {
+    public CustomUserDetails(User user) {
         this.users = user;
     }
     // Implement all methods from UserDetails interface...
