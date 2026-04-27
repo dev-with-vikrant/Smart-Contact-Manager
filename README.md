@@ -1,7 +1,7 @@
 Smart Contact Manager
 A robust, full-stack web application built with Spring Boot to help users manage their personal and professional contacts securely. This project follows the MVC (Model-View-Controller) design pattern and uses MySQL for data persistence.
 
-🚀 Key Features
+ Key Features
 Secure Authentication: User registration and login powered by Spring Security.
 
 Contact Management: Create, Read, Update, and Delete (CRUD) operations for personal contacts.
