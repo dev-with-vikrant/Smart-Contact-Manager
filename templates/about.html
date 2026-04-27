@@ -1,0 +1,168 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<head><title>About – Smart Contact Manager</title></head>
+<body>
+<section>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap');
+        :root{--teal:#009688;--teal-dark:#00796b;--teal-light:#e0f2f1;--teal-mid:#b2dfdb;--ink:#1a2332;--muted:#64748b;--card-bg:#ffffff;--page-bg:#f4f9f8;}
+        .about-page{background:var(--page-bg);font-family:'DM Sans',sans-serif;color:var(--ink);}
+        .about-hero{background:linear-gradient(135deg,var(--teal-dark) 0%,#00897b 50%,#009688 100%);color:#fff;padding:6rem 0 5rem;position:relative;overflow:hidden;}
+        .about-hero::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;border:1px solid rgba(255,255,255,.1);top:-200px;right:-150px;}
+        .about-hero::after{content:'';position:absolute;width:350px;height:350px;border-radius:50%;border:1px solid rgba(255,255,255,.14);bottom:-100px;left:5%;}
+        .hero-eyebrow{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:40px;padding:.3rem .9rem;font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.4rem;}
+        .about-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);font-weight:700;line-height:1.15;margin-bottom:1.2rem;}
+        .about-hero h1 em{font-style:italic;color:#80cbc4;}
+        .about-hero .lead{font-size:1.05rem;color:rgba(255,255,255,.8);max-width:540px;line-height:1.75;}
+        .stat-grid{display:flex;gap:1.5rem;margin-top:3rem;flex-wrap:wrap;}
+        .stat-pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:1rem 1.6rem;text-align:center;}
+        .stat-pill .num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;display:block;line-height:1;margin-bottom:.2rem;}
+        .stat-pill .lbl{font-size:.78rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.06em;}
+        .mission-section{padding:5rem 0;}
+        .section-tag{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:.6rem;}
+        .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);color:var(--ink);line-height:1.25;margin-bottom:1.2rem;}
+        .section-body{font-size:.97rem;color:var(--muted);line-height:1.8;}
+        .img-card{background:linear-gradient(135deg,var(--teal-light),var(--teal-mid));border-radius:20px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+        .img-card::before{content:'📇';font-size:6rem;opacity:.35;}
+        .img-card-label{position:absolute;bottom:1.5rem;left:1.5rem;background:var(--teal);color:#fff;font-size:.8rem;font-weight:500;padding:.4rem .9rem;border-radius:8px;}
+        .features-section{padding:5rem 0;background:var(--card-bg);}
+        .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:3rem;}
+        .feature-card{background:var(--page-bg);border:1px solid #e8edf3;border-radius:18px;padding:2rem 1.75rem;transition:transform .25s,box-shadow .25s,border-color .25s;position:relative;overflow:hidden;}
+        .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--teal);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+        .feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,150,136,.12);border-color:var(--teal-mid);}
+        .feature-card:hover::before{transform:scaleX(1);}
+        .feature-icon{width:52px;height:52px;border-radius:14px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.2rem;}
+        .feature-card h4{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--ink);margin-bottom:.5rem;}
+        .feature-card p{font-size:.88rem;color:var(--muted);line-height:1.7;}
+        .tech-section{padding:5rem 0;}
+        .tech-grid{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2.5rem;}
+        .tech-badge{display:flex;align-items:center;gap:.6rem;background:var(--card-bg);border:1.5px solid #dde3ec;border-radius:12px;padding:.65rem 1.2rem;font-size:.88rem;font-weight:500;color:var(--ink);transition:border-color .2s,box-shadow .2s;}
+        .tech-badge:hover{border-color:var(--teal);box-shadow:0 4px 12px rgba(0,150,136,.15);}
+        .tb-icon{width:28px;height:28px;border-radius:7px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+        .team-section{padding:5rem 0;background:var(--card-bg);}
+        .team-card{background:var(--page-bg);border-radius:20px;padding:2rem;text-align:center;border:1px solid #e8edf3;transition:transform .25s,box-shadow .25s;}
+        .team-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.08);}
+        .team-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.8rem;color:#fff;font-family:'Playfair Display',serif;font-weight:700;}
+        .team-card h5{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:.25rem;}
+        .team-card .role{font-size:.8rem;color:var(--teal);font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem;}
+        .team-card p{font-size:.85rem;color:var(--muted);line-height:1.6;}
+        .cta-section{padding:5rem 0;background:linear-gradient(135deg,var(--teal-dark),#009688);text-align:center;color:#fff;position:relative;overflow:hidden;}
+        .cta-section::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;border:1px solid rgba(255,255,255,.1);top:-150px;left:-100px;}
+        .cta-section h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.5rem);margin-bottom:1rem;position:relative;z-index:1;}
+        .cta-section p{color:rgba(255,255,255,.8);max-width:480px;margin:0 auto 2rem;font-size:.97rem;position:relative;z-index:1;}
+        .btn-cta{display:inline-block;background:#fff;color:var(--teal-dark);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.95rem;padding:.85rem 2.2rem;border-radius:12px;text-decoration:none;transition:transform .2s,box-shadow .2s;position:relative;z-index:1;box-shadow:0 4px 16px rgba(0,0,0,.15);}
+        .btn-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2);color:var(--teal-dark);}
+        .btn-cta-outline{display:inline-block;background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4);font-family:'DM Sans',sans-serif;font-weight:500;font-size:.95rem;padding:.85rem 2.2rem;border-radius:12px;text-decoration:none;transition:all .2s;margin-left:.75rem;position:relative;z-index:1;}
+        .btn-cta-outline:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.7);}
+    </style>
+
+    <div class="about-page">
+        <div class="about-hero">
+            <div class="container position-relative" style="z-index:2">
+                <div class="hero-eyebrow">About Us</div>
+                <h1>Built to keep your<br><em>connections alive.</em></h1>
+                <p class="lead">Smart Contact Manager is a secure, intuitive platform that helps you organise every contact, every note, and every relationship — all in one place.</p>
+                <div class="stat-grid">
+                    <div class="stat-pill"><span class="num">∞</span><span class="lbl">Contacts Stored</span></div>
+                    <div class="stat-pill"><span class="num">100%</span><span class="lbl">Secure</span></div>
+                    <div class="stat-pill"><span class="num">24/7</span><span class="lbl">Available</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mission-section">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <p class="section-tag">Our Mission</p>
+                        <h2 class="section-title">Making every relationship count.</h2>
+                        <p class="section-body mb-3">In a world overflowing with information, keeping track of the people who matter most can be overwhelming. Smart Contact Manager was created to solve that — a single, beautiful space for all your Contacts, accessible anytime.</p>
+                        <p class="section-body">Built with Spring Boot and secured by Spring Security, we prioritise your privacy above all. Your data is yours, always encrypted, and never shared.</p>
+                    </div>
+                    <div class="col-lg-6"><div class="img-card"><span class="img-card-label">Smart Contact Manager</span></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-section">
+            <div class="container">
+                <div class="text-center">
+                    <p class="section-tag">What We Offer</p>
+                    <h2 class="section-title">Everything you need,<br>nothing you don't.</h2>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card"><div class="feature-icon">👤</div><h4>Unlimited Contacts</h4><p>Store names, emails, phones, and notes without any limits.</p></div>
+                    <div class="feature-card"><div class="feature-icon">🔐</div><h4>Bank-Grade Security</h4><p>BCrypt passwords + Spring Security. Only you can access your data.</p></div>
+                    <div class="feature-card"><div class="feature-icon">🤖</div><h4>AI Assistant</h4><p>Spring AI + OpenAI GPT answers your questions instantly.</p></div>
+                    <div class="feature-card"><div class="feature-icon">🔍</div><h4>Instant Search</h4><p>Find any contact in milliseconds with Spring Data JPA.</p></div>
+                    <div class="feature-card"><div class="feature-icon">☁️</div><h4>Cloud Backed</h4><p>Real-time MySQL sync. Never lose a contact.</p></div>
+                    <div class="feature-card"><div class="feature-icon">📱</div><h4>Responsive Design</h4><p>Works perfectly on desktop, tablet, or mobile.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tech-section">
+            <div class="container">
+                <p class="section-tag">Technology</p>
+                <h2 class="section-title">Powered by modern tech.</h2>
+                <p class="section-body" style="max-width:520px">Enterprise-grade stack — reliable, scalable, and secure from day one.</p>
+                <div class="tech-grid">
+                    <div class="tech-badge"><span class="tb-icon">☕</span> Spring Boot</div>
+                    <div class="tech-badge"><span class="tb-icon">🔒</span> Spring Security</div>
+                    <div class="tech-badge"><span class="tb-icon">🤖</span> Spring AI</div>
+                    <div class="tech-badge"><span class="tb-icon">🗄️</span> Spring Data JPA</div>
+                    <div class="tech-badge"><span class="tb-icon">🐬</span> MySQL</div>
+                    <div class="tech-badge"><span class="tb-icon">🍃</span> Thymeleaf</div>
+                    <div class="tech-badge"><span class="tb-icon">🎨</span> Bootstrap 5</div>
+                    <div class="tech-badge"><span class="tb-icon">☕</span> Java 17</div>
+                    <div class="tech-badge"><span class="tb-icon">🏗️</span> Maven</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-section">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <p class="section-tag">The Team</p>
+                    <h2 class="section-title">People behind the product.</h2>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="team-card">
+                            <div class="team-avatar">V</div>
+                            <h5>Vikrant Yadav</h5>
+                            <p class="role">Lead Developer</p>
+                            <p>Full-stack Java developer passionate about building clean, secure web applications.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="team-card">
+                            <div class="team-avatar">S</div>
+                            <h5>Spring Boot</h5>
+                            <p class="role">Core Framework</p>
+                            <p>The backbone — auto-configured, production-ready, and lightning fast.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="team-card">
+                            <div class="team-avatar">M</div>
+                            <h5>MySQL</h5>
+                            <p class="role">Data Layer</p>
+                            <p>Reliable, ACID-compliant relational storage for all your contact information.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <div class="container">
+                <h2>Ready to get organised?</h2>
+                <p>Join thousands of users managing their Contacts with Smart Contact Manager.</p>
+                <a th:href="@{/signup}" class="btn-cta">Create Free Account</a>
+                <a th:href="@{/home}" class="btn-cta-outline">Go to Home</a>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

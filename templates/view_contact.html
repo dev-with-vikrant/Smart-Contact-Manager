@@ -1,0 +1,83 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<head><title>View Contact</title></head>
+<body>
+<section>
+    <style>
+        .view-page { background:#f4f9f8; min-height:90vh; padding:2.5rem 0; }
+        .vc-card { background:#fff; border-radius:20px; border:1px solid #e2e8f0; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,.07); }
+        .vc-header { background:linear-gradient(135deg,#00796b,#009688); padding:2.5rem 2rem; display:flex; align-items:center; gap:1.5rem; color:#fff; }
+        .vc-avatar { width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:700; font-family:'Playfair Display',serif; border:3px solid rgba(255,255,255,.4); flex-shrink:0; overflow:hidden; }
+        .vc-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+        .vc-header h2 { font-family:'Playfair Display',serif; font-size:1.8rem; margin:0 0 .3rem; }
+        .vc-header p { color:rgba(255,255,255,.8); margin:0; font-size:.92rem; }
+        .fav-tag { display:inline-block; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.35); border-radius:20px; padding:.2rem .75rem; font-size:.78rem; margin-top:.5rem; }
+        .vc-body { padding:2rem; }
+        .detail-row { display:flex; align-items:flex-start; gap:1rem; padding:.85rem 0; border-bottom:1px solid #f1f5f9; }
+        .detail-row:last-child { border-bottom:none; }
+        .detail-icon { width:38px; height:38px; border-radius:10px; background:#e0f2f1; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+        .detail-lbl  { font-size:.75rem; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.2rem; }
+        .detail-val  { font-size:.95rem; color:#1a2332; font-weight:500; }
+        .detail-val a { color:#009688; text-decoration:none; }
+        .action-bar { display:flex; gap:.75rem; margin-top:1.75rem; flex-wrap:wrap; }
+        .btn-edit-lg { background:#009688; color:#fff; padding:.75rem 1.75rem; border-radius:11px; font-size:.92rem; font-weight:600; text-decoration:none; transition:background .2s; }
+        .btn-edit-lg:hover { background:#00796b; color:#fff; }
+        .btn-del-lg  { background:#fdecea; color:#e53935; padding:.75rem 1.75rem; border-radius:11px; font-size:.92rem; font-weight:600; text-decoration:none; border:1px solid #f7c1c1; }
+        .btn-back    { background:transparent; color:#64748b; padding:.75rem 1.25rem; border-radius:11px; font-size:.9rem; text-decoration:none; border:1px solid #dde3ec; }
+        .btn-back:hover { border-color:#009688; color:#009688; }
+        .btn-fav     { background:#fffbeb; color:#b45309; padding:.75rem 1.25rem; border-radius:11px; font-size:.9rem; text-decoration:none; border:1px solid #fde68a; }
+    </style>
+
+    <div class="view-page">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="vc-card">
+                        <div class="vc-header">
+                            <div class="vc-avatar">
+                                <img th:if="${contact.imageUrl != null and contact.imageUrl != 'default_contact.png'}"
+                                     th:src="@{/img/contacts/{img}(img=${contact.imageUrl})}" alt="photo"/>
+                                <span th:if="${contact.imageUrl == null or contact.imageUrl == 'default_contact.png'}"
+                                      th:text="${#strings.substring(contact.name,0,1).toUpperCase()}">A</span>
+                            </div>
+                            <div>
+                                <h2 th:text="${contact.name}">Name</h2>
+                                <p th:text="${contact.work ?: 'No job title'}">Work</p>
+                                <div class="fav-tag" th:if="${contact.favourite}">⭐ Favourite</div>
+                            </div>
+                        </div>
+
+                        <div class="vc-body">
+                            <div class="detail-row" th:if="${contact.email != null}">
+                                <div class="detail-icon">✉️</div>
+                                <div><div class="detail-lbl">Email</div><div class="detail-val"><a th:href="'mailto:' + ${contact.email}" th:text="${contact.email}">email</a></div></div>
+                            </div>
+                            <div class="detail-row" th:if="${contact.phone != null}">
+                                <div class="detail-icon">📞</div>
+                                <div><div class="detail-lbl">Phone</div><div class="detail-val"><a th:href="'tel:' + ${contact.phone}" th:text="${contact.phone}">phone</a></div></div>
+                            </div>
+                            <div class="detail-row" th:if="${contact.work != null}">
+                                <div class="detail-icon">🏢</div>
+                                <div><div class="detail-lbl">Work</div><div class="detail-val" th:text="${contact.work}">work</div></div>
+                            </div>
+                            <div class="detail-row" th:if="${contact.description != null}">
+                                <div class="detail-icon">📝</div>
+                                <div><div class="detail-lbl">Notes</div><div class="detail-val" th:text="${contact.description}">desc</div></div>
+                            </div>
+
+                            <div class="action-bar">
+                                <a th:href="@{/user/edit-contact/{id}(id=${contact.cId})}" class="btn-edit-lg">Edit Contact</a>
+                                <a th:href="@{/user/favourite/{id}(id=${contact.cId})}" class="btn-fav"
+                                   th:text="${contact.favourite} ? 'Unfavourite' : '⭐ Favourite'">Favourite</a>
+                                <a th:href="@{/user/delete-contact/{id}(id=${contact.cId})}" class="btn-del-lg"
+                                   onclick="return confirm('Delete this contact?')">Delete</a>
+                                <a th:href="@{/user/contacts}" class="btn-back">← Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

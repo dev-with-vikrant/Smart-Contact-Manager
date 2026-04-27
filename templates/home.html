@@ -1,0 +1,53 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<head><title>Home – Smart Contact Manager</title></head>
+<body>
+<section>
+  <style>
+    .banner {
+      width: 100%; min-height: 93vh;
+      background: linear-gradient(rgba(0,77,64,.82), rgba(0,50,42,.9)),
+      url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1600') center/cover no-repeat;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; text-align: center; padding: 2rem;
+    }
+    .banner-inner { max-width: 700px; animation: fadeUp .7s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+    .banner-tag { display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:40px; padding:.28rem .9rem; font-size:.75rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; margin-bottom:1.5rem; }
+    .banner h1 { font-family:'Playfair Display',serif; font-size:clamp(2.6rem,6vw,4.2rem); font-weight:700; line-height:1.12; margin-bottom:1.2rem; }
+    .banner h1 em { font-style:italic; color:#80cbc4; }
+    .banner p { font-size:1.08rem; color:rgba(255,255,255,.78); line-height:1.72; max-width:520px; margin:0 auto 2.5rem; }
+    .banner-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .btn-hero-primary { background:#009688; color:#fff; border:none; padding:.9rem 2.2rem; border-radius:12px; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600; text-decoration:none; display:inline-block; box-shadow:0 4px 18px rgba(0,150,136,.45); transition:background .2s,transform .15s; }
+    .btn-hero-primary:hover { background:#00796b; transform:translateY(-2px); color:#fff; }
+    .btn-hero-outline { background:transparent; color:#fff; border:2px solid rgba(255,255,255,.4); padding:.9rem 2.2rem; border-radius:12px; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:500; text-decoration:none; display:inline-block; transition:background .2s,border-color .2s; }
+    .btn-hero-outline:hover { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.7); color:#fff; }
+    .feature-strip { background:#fff; padding:3rem 0; border-bottom:1px solid #e8edf3; }
+    .feat-item { text-align:center; padding:1.5rem 1rem; }
+    .feat-item .fi { font-size:2rem; margin-bottom:.75rem; }
+    .feat-item h5 { font-family:'Playfair Display',serif; font-size:1rem; color:#1a2332; margin-bottom:.35rem; }
+    .feat-item p { font-size:.85rem; color:#64748b; line-height:1.65; }
+  </style>
+  <div class="banner">
+    <div class="banner-inner">
+      <div class="banner-tag">📇 Smart Contact Manager</div>
+      <h1>Your Contacts,<br><em>beautifully</em> organised.</h1>
+      <p>Store, manage, and access all your important Contacts securely — powered by Spring Boot and AI.</p>
+      <div class="banner-btns">
+        <a th:href="@{/signup}" class="btn-hero-primary">Get Started Free →</a>
+        <a th:href="@{/about}" class="btn-hero-outline">Learn More</a>
+      </div>
+    </div>
+  </div>
+  <div class="feature-strip">
+    <div class="container">
+      <div class="row g-3">
+        <div class="col-6 col-md-3"><div class="feat-item"><div class="fi">🔐</div><h5>BCrypt Security</h5><p>Passwords encrypted with BCrypt + Spring Security.</p></div></div>
+        <div class="col-6 col-md-3"><div class="feat-item"><div class="fi">📇</div><h5>Unlimited Contacts</h5><p>Store every name, number, and note in one place.</p></div></div>
+        <div class="col-6 col-md-3"><div class="feat-item"><div class="fi">🤖</div><h5>AI Assistant</h5><p>Powered by Spring AI + OpenAI GPT — always ready to help.</p></div></div>
+        <div class="col-6 col-md-3"><div class="feat-item"><div class="fi">☁️</div><h5>MySQL Cloud Sync</h5><p>Data saved to your database in real time.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

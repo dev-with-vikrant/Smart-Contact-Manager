@@ -1,0 +1,110 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<head><title>Edit Contact</title></head>
+<body>
+<section>
+    <style>
+        .form-page{background:#f4f9f8;min-height:90vh;padding:2.5rem 0;}
+        .form-card{background:#fff;border-radius:18px;padding:2.25rem;border:1px solid #e2e8f0;box-shadow:0 8px 32px rgba(0,0,0,.06);}
+        .form-card h2{font-family:'Playfair Display',serif;font-size:1.65rem;color:#1a2332;margin-bottom:.25rem;}
+        .form-card p.sub{font-size:.85rem;color:#64748b;margin-bottom:1.75rem;}
+        .fgroup{margin-bottom:1.1rem;}
+        .fgroup label{display:block;font-size:.79rem;font-weight:600;color:#1a2332;margin-bottom:.38rem;}
+        .fwrap{position:relative;}
+        .fwrap .ico{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none;}
+        .fwrap .ico-top{top:.8rem;transform:none;}
+        .fwrap input,.fwrap textarea{width:100%;padding:.72rem .85rem .72rem 2.4rem;border:1.5px solid #dde3ec;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.875rem;color:#1a2332;background:#fafbfc;outline:none;transition:border-color .2s,box-shadow .2s;}
+        .fwrap textarea{padding-top:.65rem;resize:vertical;min-height:80px;}
+        .fwrap input:focus,.fwrap textarea:focus{border-color:#009688;background:#fff;box-shadow:0 0 0 3px rgba(0,150,136,.1);}
+        .fwrap input.field-error{border-color:#e53935;}
+        .err-msg{font-size:.72rem;color:#e53935;margin-top:.25rem;}
+        .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+        .btn-submit{background:#009688;color:#fff;border:none;padding:.88rem 2rem;border-radius:11px;font-size:.97rem;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(0,150,136,.32);transition:background .2s,transform .15s;}
+        .btn-submit:hover{background:#00796b;transform:translateY(-1px);}
+        .btn-cancel{background:transparent;color:#64748b;border:1.5px solid #dde3ec;padding:.88rem 1.5rem;border-radius:11px;font-size:.9rem;text-decoration:none;display:inline-block;}
+        .fav-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1.25rem;}
+        .fav-row input{accent-color:#009688;width:18px;height:18px;}
+    </style>
+
+    <div class="form-page">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="form-card">
+                        <h2>Edit Contact</h2>
+                        <p class="sub">Update the details below.</p>
+
+                        <form th:action="@{/user/update-contact/{id}(id=${contact.cId})}"
+                              th:object="${contact}" method="post" enctype="multipart/form-data" novalidate>
+
+                            <div class="row2">
+                                <div class="fgroup">
+                                    <label>Full Name *</label>
+                                    <div class="fwrap">
+                                        <span class="ico">👤</span>
+                                        <input type="text" th:field="*{name}"
+                                               th:classappend="${#fields.hasErrors('name')} ? ' field-error'" required/>
+                                    </div>
+                                    <p class="err-msg" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                                </div>
+                                <div class="fgroup">
+                                    <label>Phone</label>
+                                    <div class="fwrap">
+                                        <span class="ico">📞</span>
+                                        <input type="tel" th:field="*{phone}"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fgroup">
+                                <label>Email</label>
+                                <div class="fwrap">
+                                    <span class="ico">✉️</span>
+                                    <input type="email" th:field="*{email}"
+                                           th:classappend="${#fields.hasErrors('email')} ? ' field-error'"/>
+                                </div>
+                                <p class="err-msg" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                            </div>
+
+                            <div class="fgroup">
+                                <label>Company / Work</label>
+                                <div class="fwrap">
+                                    <span class="ico">🏢</span>
+                                    <input type="text" th:field="*{work}"/>
+                                </div>
+                            </div>
+
+                            <div class="fgroup">
+                                <label>Description / Notes</label>
+                                <div class="fwrap">
+                                    <span class="ico ico-top">📝</span>
+                                    <textarea th:field="*{description}"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="fgroup">
+                                <label>Update Profile Image</label>
+                                <div class="fwrap">
+                                    <span class="ico">🖼️</span>
+                                    <input type="file" name="profileImage" accept="image/*" style="padding-left:2.4rem"/>
+                                </div>
+                            </div>
+
+                            <div class="fav-row">
+                                <input type="checkbox" th:field="*{favourite}" id="fav"/>
+                                <label for="fav">⭐ Mark as favourite contact</label>
+                            </div>
+
+                            <div style="display:flex;gap:1rem;align-items:center">
+                                <button type="submit" class="btn-submit">Update Contact →</button>
+                                <a th:href="@{/user/contact/{id}(id=${contact.cId})}" class="btn-cancel">Cancel</a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

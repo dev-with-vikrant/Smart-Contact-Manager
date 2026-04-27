@@ -1,0 +1,104 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<head><title>My Contacts</title></head>
+<body>
+<section>
+    <style>
+        .contacts-page { background:#f4f9f8; min-height:90vh; padding:2rem 0; }
+        .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem; }
+        .page-header h2 { font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a2332; margin:0; }
+        .search-bar { display:flex; gap:.5rem; }
+        .search-bar input { border:1.5px solid #dde3ec; border-radius:10px; padding:.6rem 1rem; font-family:'DM Sans',sans-serif; font-size:.875rem; outline:none; width:220px; transition:border-color .2s; }
+        .search-bar input:focus { border-color:#009688; }
+        .search-bar button { background:#009688; color:#fff; border:none; padding:.6rem 1.1rem; border-radius:10px; cursor:pointer; font-size:.875rem; }
+        .btn-add { background:#009688; color:#fff; border:none; padding:.6rem 1.2rem; border-radius:10px; font-size:.875rem; font-weight:500; text-decoration:none; display:inline-block; }
+        .btn-add:hover { background:#00796b; color:#fff; }
+        .contact-card { background:#fff; border-radius:14px; border:1px solid #e2e8f0; padding:1.25rem; display:flex; align-items:center; gap:1rem; transition:box-shadow .2s, transform .2s; margin-bottom:.75rem; }
+        .contact-card:hover { box-shadow:0 6px 20px rgba(0,150,136,.1); transform:translateY(-1px); }
+        .c-avatar { width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#009688,#00796b); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:1.25rem; flex-shrink:0; }
+        .c-avatar img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+        .c-info { flex:1; min-width:0; }
+        .c-name { font-weight:600; font-size:.97rem; color:#1a2332; margin-bottom:.18rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .c-sub  { font-size:.8rem; color:#64748b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .c-actions { display:flex; gap:.5rem; flex-shrink:0; }
+        .btn-sm { padding:.38rem .75rem; border-radius:8px; font-size:.78rem; font-weight:500; text-decoration:none; display:inline-block; border:1px solid; }
+        .btn-view   { background:#e0f2f1; color:#009688; border-color:#b2dfdb; }
+        .btn-edit   { background:#e8f4fd; color:#185FA5; border-color:#b5d4f4; }
+        .btn-del    { background:#fdecea; color:#e53935; border-color:#f7c1c1; }
+        .btn-sm:hover { opacity:.85; }
+        .fav-badge { font-size:.85rem; margin-left:.4rem; }
+        .empty-state { text-align:center; padding:4rem 1rem; background:#fff; border-radius:18px; border:1px solid #e2e8f0; }
+        .empty-state .icon { font-size:4rem; margin-bottom:1rem; }
+        .pagination-row { display:flex; justify-content:center; gap:.5rem; margin-top:1.5rem; flex-wrap:wrap; }
+        .pg-btn { padding:.45rem .9rem; border-radius:8px; border:1px solid #dde3ec; background:#fff; font-size:.83rem; text-decoration:none; color:#1a2332; transition:all .15s; }
+        .pg-btn.active { background:#009688; color:#fff; border-color:#009688; }
+        .pg-btn:hover:not(.active) { background:#e0f2f1; }
+        .pg-btn.disabled { opacity:.4; pointer-events:none; }
+    </style>
+
+    <div class="contacts-page">
+        <div class="container">
+
+            <div class="page-header">
+                <h2>My Contacts</h2>
+                <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+                    <!-- Search form -->
+                    <form th:action="@{/user/contacts}" method="get" class="search-bar">
+                        <input type="text" name="search" th:value="${search}" placeholder="Search by name..."/>
+                        <button type="submit">🔍</button>
+                    </form>
+                    <a th:href="@{/user/add-contact}" class="btn-add">+ Add Contact</a>
+                </div>
+            </div>
+
+            <!-- No results -->
+            <div th:if="${contacts.totalElements == 0}" class="empty-state">
+                <div class="icon">📇</div>
+                <h4 style="font-family:'Playfair Display',serif;color:#1a2332;margin-bottom:.5rem">No contacts found</h4>
+                <p style="color:#64748b;margin-bottom:1.5rem" th:text="${search != ''} ? 'No contacts match your search.' : 'You have no contacts yet.'">No contacts</p>
+                <a th:href="@{/user/add-contact}" style="background:#009688;color:#fff;padding:.7rem 1.5rem;border-radius:10px;text-decoration:none;font-weight:500">Add Your First Contact</a>
+            </div>
+
+            <!-- Contact list -->
+            <div th:each="contact : ${contacts.content}">
+                <div class="contact-card">
+                    <div class="c-avatar">
+                        <img th:if="${contact.imageUrl != null and contact.imageUrl != 'default_contact.png'}"
+                             th:src="@{/img/contacts/{img}(img=${contact.imageUrl})}" alt="photo"/>
+                        <span th:if="${contact.imageUrl == null or contact.imageUrl == 'default_contact.png'}"
+                              th:text="${#strings.substring(contact.name,0,1).toUpperCase()}">A</span>
+                    </div>
+                    <div class="c-info">
+                        <div class="c-name">
+                            <span th:text="${contact.name}">Name</span>
+                            <span class="fav-badge" th:if="${contact.favourite}">⭐</span>
+                        </div>
+                        <div class="c-sub" th:text="${contact.email ?: (contact.phone ?: 'No details')}">details</div>
+                    </div>
+                    <div class="c-actions">
+                        <a th:href="@{/user/contact/{id}(id=${contact.cId})}"        class="btn-sm btn-view">View</a>
+                        <a th:href="@{/user/edit-contact/{id}(id=${contact.cId})}"   class="btn-sm btn-edit">Edit</a>
+                        <a th:href="@{/user/delete-contact/{id}(id=${contact.cId})}" class="btn-sm btn-del"
+                           onclick="return confirm('Delete this contact?')">Delete</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div th:if="${contacts.totalPages > 1}" class="pagination-row">
+                <a th:href="@{/user/contacts(page=${currentPage - 1}, search=${search})}"
+                   th:class="${currentPage == 0} ? 'pg-btn disabled' : 'pg-btn'">‹ Prev</a>
+
+                <a th:each="i : ${#numbers.sequence(0, contacts.totalPages - 1)}"
+                   th:href="@{/user/contacts(page=${i}, search=${search})}"
+                   th:text="${i + 1}"
+                   th:class="${i == currentPage} ? 'pg-btn active' : 'pg-btn'">1</a>
+
+                <a th:href="@{/user/contacts(page=${currentPage + 1}, search=${search})}"
+                   th:class="${currentPage == contacts.totalPages - 1} ? 'pg-btn disabled' : 'pg-btn'">Next ›</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up – Smart Contact Manager</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--teal:#009688;--teal-dark:#00796b;--teal-light:#e0f2f1;--teal-mid:#b2dfdb;--ink:#1a2332;--muted:#64748b;--danger:#e53935;--warning:#f59e0b;--success:#22c55e;--card:#ffffff;--bg:#f0f7f6;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{min-height:100vh;font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;flex-direction:column;}
+    .top-nav{background:var(--teal-dark);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+    .nav-brand{font-family:'Playfair Display',serif;font-size:1.2rem;color:#fff;text-decoration:none;font-weight:700;}
+    .nav-actions{display:flex;gap:.6rem;align-items:center;}
+    .nav-pill{color:rgba(255,255,255,.85);text-decoration:none;font-size:.85rem;font-weight:500;padding:.38rem .85rem;border-radius:8px;transition:background .2s;}
+    .nav-pill:hover{background:rgba(255,255,255,.15);color:#fff;}
+    .nav-btn{color:#fff;text-decoration:none;font-size:.85rem;font-weight:600;padding:.4rem 1rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.4);transition:all .2s;}
+    .nav-btn:hover{background:rgba(255,255,255,.12);color:#fff;}
+    .page-grid{flex:1;display:grid;grid-template-columns:1fr minmax(0,490px) 320px;gap:2rem;padding:2.5rem 2rem;max-width:1300px;margin:0 auto;width:100%;align-items:start;}
+    .perks-col{padding-right:.5rem;}
+    .tag{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--teal);margin-bottom:.55rem;}
+    .perks-col h2{font-family:'Playfair Display',serif;font-size:1.95rem;color:var(--ink);line-height:1.22;margin-bottom:.85rem;}
+    .perks-col h2 em{font-style:italic;color:var(--teal);}
+    .perks-col>p{font-size:.9rem;color:var(--muted);line-height:1.72;margin-bottom:1.8rem;}
+    .perk-list{list-style:none;display:flex;flex-direction:column;gap:.85rem;}
+    .perk{display:flex;align-items:flex-start;gap:.8rem;}
+    .perk-icon{width:40px;height:40px;flex-shrink:0;border-radius:11px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+    .perk-body strong{display:block;font-size:.87rem;color:var(--ink);font-weight:600;}
+    .perk-body span{font-size:.79rem;color:var(--muted);}
+    .signup-card{background:var(--card);border-radius:20px;padding:2.2rem 2rem;box-shadow:0 16px 48px rgba(0,0,0,.09),0 4px 12px rgba(0,0,0,.04);border:1px solid rgba(0,150,136,.08);animation:rise .4s ease both;}
+    @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .card-head{text-align:center;margin-bottom:1.4rem;}
+    .card-head h3{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--ink);margin-bottom:.2rem;}
+    .card-head p{font-size:.83rem;color:var(--muted);}
+    .alert-box{border-radius:10px;padding:.7rem 1rem;margin-bottom:1rem;font-size:.84rem;display:flex;align-items:center;gap:.5rem;border-left:3px solid;}
+    .alert-danger{background:#fdecea;border-color:var(--danger);color:#b71c1c;}
+    .alert-warning{background:#fffbeb;border-color:var(--warning);color:#78350f;}
+    .alert-success{background:#f0fdf4;border-color:var(--success);color:#14532d;}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
+    .fgroup{margin-bottom:.95rem;}
+    .fgroup label{display:block;font-size:.77rem;font-weight:600;color:var(--ink);margin-bottom:.35rem;letter-spacing:.025em;}
+    .fgroup label .req{color:var(--danger);}
+    .fwrap{position:relative;}
+    .fwrap .ico{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);font-size:.88rem;pointer-events:none;z-index:1;}
+    .fwrap .ico-top{top:.82rem;transform:none;}
+    .fwrap input,.fwrap textarea{width:100%;padding:.7rem .85rem .7rem 2.35rem;border:1.5px solid #dde3ec;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.875rem;color:var(--ink);background:#fafbfc;outline:none;transition:border-color .2s,box-shadow .2s;}
+    .fwrap textarea{padding-top:.62rem;resize:vertical;min-height:70px;}
+    .fwrap input:focus,.fwrap textarea:focus{border-color:var(--teal);background:#fff;box-shadow:0 0 0 3px rgba(0,150,136,.1);}
+    .fwrap input::placeholder,.fwrap textarea::placeholder{color:#b5bec9;font-size:.83rem;}
+    .fwrap input.field-error{border-color:var(--danger);}
+    .err-msg{font-size:.72rem;color:var(--danger);margin-top:.25rem;}
+    .eye-btn{position:absolute;right:.85rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:.88rem;padding:0;z-index:2;}
+    .pw-bar{height:3px;background:#eaedf3;border-radius:3px;margin-top:.38rem;overflow:hidden;}
+    .pw-fill{height:100%;border-radius:3px;width:0;transition:width .35s,background .35s;}
+    .pw-hint{font-size:.7rem;color:var(--muted);margin-top:.15rem;}
+    .terms{display:flex;align-items:flex-start;gap:.5rem;margin:.4rem 0 1.1rem;}
+    .terms input[type="checkbox"]{accent-color:var(--teal);width:15px;height:15px;margin-top:3px;flex-shrink:0;}
+    .terms label{font-size:.81rem;color:var(--muted);line-height:1.5;}
+    .terms a{color:var(--teal);font-weight:500;text-decoration:none;}
+    .btn-register{width:100%;padding:.86rem;background:var(--teal);color:#fff;border:none;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:.96rem;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(0,150,136,.32);transition:background .2s,transform .15s,box-shadow .2s;}
+    .btn-register:hover{background:var(--teal-dark);transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,150,136,.38);}
+    .btn-register:disabled{opacity:.6;cursor:not-allowed;}
+    .or-divider{display:flex;align-items:center;gap:.65rem;margin:1rem 0;color:#b5bec9;font-size:.76rem;}
+    .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:#eaedf3;}
+    .login-link{text-align:center;font-size:.84rem;color:var(--muted);}
+    .login-link a{color:var(--teal);font-weight:600;text-decoration:none;}
+    /* AI */
+    .ai-col{}
+    .ai-box{background:var(--card);border-radius:18px;box-shadow:0 8px 28px rgba(0,0,0,.07);border:1px solid rgba(0,150,136,.1);overflow:hidden;position:sticky;top:1.5rem;}
+    .ai-head{background:linear-gradient(135deg,var(--teal-dark),var(--teal));padding:.95rem 1.2rem;display:flex;align-items:center;gap:.65rem;color:#fff;}
+    .ai-ava{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+    .ai-head-text strong{display:block;font-size:.9rem;font-weight:600;}
+    .ai-head-text small{font-size:.7rem;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:.3rem;}
+    .ai-dot{width:6px;height:6px;border-radius:50%;background:#80cbc4;animation:blink 2s ease-in-out infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .chips{padding:.6rem 1rem .3rem;display:flex;flex-wrap:wrap;gap:.35rem;}
+    .chip{font-size:.68rem;background:var(--teal-light);color:var(--teal-dark);border:none;border-radius:20px;padding:.2rem .62rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .18s;}
+    .chip:hover{background:var(--teal-mid);}
+    .chat-msgs{height:240px;overflow-y:auto;padding:.8rem 1rem;display:flex;flex-direction:column;gap:.6rem;scrollbar-width:thin;scrollbar-color:var(--teal-mid) transparent;}
+    .msg{max-width:92%;padding:.55rem .82rem;border-radius:12px;font-size:.8rem;line-height:1.52;animation:pop .18s ease both;}
+    @keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+    .msg-ai{background:var(--teal-light);color:#004d40;align-self:flex-start;border-bottom-left-radius:3px;}
+    .msg-user{background:var(--teal);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;}
+    .typing{background:var(--teal-light);align-self:flex-start;border-bottom-left-radius:3px;display:flex;gap:4px;padding:.6rem .85rem;border-radius:12px;}
+    .typing span{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:bounce 1.2s ease infinite;}
+    .typing span:nth-child(2){animation-delay:.2s;}
+    .typing span:nth-child(3){animation-delay:.4s;}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+    .chat-input-row{padding:.7rem 1rem;border-top:1px solid #eaedf3;display:flex;gap:.42rem;align-items:center;background:#fafbfc;}
+    .chat-in{flex:1;border:1.5px solid #dde3ec;border-radius:9px;padding:.5rem .78rem;font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;color:var(--ink);transition:border-color .2s;}
+    .chat-in:focus{border-color:var(--teal);}
+    .send-btn{width:33px;height:33px;border-radius:9px;background:var(--teal);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:background .18s,transform .14s;}
+    .send-btn:hover{background:var(--teal-dark);transform:scale(1.07);}
+    @media(max-width:1080px){.page-grid{grid-template-columns:1fr minmax(0,460px);}.perks-col{display:none;}}
+    @media(max-width:700px){.page-grid{grid-template-columns:1fr;padding:1.2rem 1rem;}.row2{grid-template-columns:1fr;}}
+  </style>
+
+</head>
+<body>
+
+<nav class="top-nav">
+  <a th:href="@{/home}" class="nav-brand">📇 Smart Contact Manager</a>
+  <div class="nav-actions">
+    <a th:href="@{/home}"  class="nav-pill">Home</a>
+    <a th:href="@{/about}" class="nav-pill">About</a>
+    <a th:href="@{/login}" class="nav-btn">Login</a>
+  </div>
+</nav>
+
+<div class="page-grid">
+
+  <!-- LEFT PERKS -->
+  <div class="perks-col">
+    <p class="tag">Create Account</p>
+    <h2>Manage contacts <em>smarter</em> every day.</h2>
+    <p>Sign up in under 60 seconds. Your data stays encrypted with BCrypt, protected by Spring Security.</p>
+    <ul class="perk-list">
+      <li class="perk"><div class="perk-icon">🔐</div><div class="perk-body"><strong>BCrypt Encryption</strong><span>Passwords hashed — never stored plain.</span></div></li>
+      <li class="perk"><div class="perk-icon">📇</div><div class="perk-body"><strong>Unlimited Contacts</strong><span>Store names, phones, emails and notes.</span></div></li>
+      <li class="perk"><div class="perk-icon">🤖</div><div class="perk-body"><strong>AI Assistant</strong><span>Powered by Spring AI + OpenAI GPT.</span></div></li>
+      <li class="perk"><div class="perk-icon">☁️</div><div class="perk-body"><strong>MySQL Cloud Sync</strong><span>All data saved to your database instantly.</span></div></li>
+    </ul>
+  </div>
+
+  <!-- CENTER: SIGNUP FORM -->
+  <div class="signup-card">
+    <div class="card-head">
+      <h3>Create your account</h3>
+      <p>Free forever · No credit card needed</p>
+    </div>
+
+    <!-- ✅ FIX: Simple th:class without nested ${} inside ${} -->
+    <div th:if="${session.message != null}"
+         th:class="${session.message.type == 'alert-danger'}  ? 'alert-box alert-danger'  :
+                   (session.message.type == 'alert-warning' ? 'alert-box alert-warning' :
+                                                              'alert-box alert-success')">
+      <span th:text="${session.message.content}">Message</span>
+    </div>
+
+    <!--
+      th:action  = POST /do_register  (also auto-injects ONE _csrf token)
+      th:object  = binds to User bean from controller model
+      novalidate = let server handle validation, not browser
+    -->
+    <form th:action="@{/do_register}" th:object="${user}" method="post" id="regForm" novalidate>
+
+      <!-- Row: Name + Phone -->
+      <div class="row2">
+        <div class="fgroup">
+          <label for="nameField">Full Name <span class="req">*</span></label>
+          <div class="fwrap">
+            <span class="ico">👤</span>
+            <input type="text" id="nameField" th:field="*{name}"
+                   th:classappend="${#fields.hasErrors('name')} ? ' field-error'"
+                   placeholder="Your full name" required/>
+          </div>
+          <p class="err-msg" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+        </div>
+        <div class="fgroup">
+          <label for="phoneField">Phone <small style="color:var(--muted);font-weight:400">(optional)</small></label>
+          <div class="fwrap">
+            <span class="ico">📞</span>
+            <input type="tel" id="phoneField" th:field="*{phone}" placeholder="+91 98765 43210"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="fgroup">
+        <label for="emailField">Email Address <span class="req">*</span></label>
+        <div class="fwrap">
+          <span class="ico">✉️</span>
+          <input type="email" id="emailField" th:field="*{email}"
+                 th:classappend="${#fields.hasErrors('email')} ? ' field-error'"
+                 placeholder="you@example.com" required/>
+        </div>
+        <p class="err-msg" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+      </div>
+
+      <!-- Password -->
+      <div class="fgroup">
+        <label for="pwField">Password <span class="req">*</span></label>
+        <div class="fwrap">
+          <span class="ico">🔒</span>
+          <input type="password" id="pwField" th:field="*{password}"
+                 th:classappend="${#fields.hasErrors('password')} ? ' field-error'"
+                 placeholder="Min. 6 characters" required
+                 oninput="calcStrength(this.value)"/>
+          <button type="button" class="eye-btn" onclick="togglePw()">👁</button>
+        </div>
+        <div class="pw-bar"><div class="pw-fill" id="pwFill"></div></div>
+        <p class="pw-hint" id="pwHint">Enter a password</p>
+        <p class="err-msg" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+      </div>
+
+      <!-- About -->
+      <div class="fgroup">
+        <label for="aboutField">About <small style="color:var(--muted);font-weight:400">(optional)</small></label>
+        <div class="fwrap">
+          <span class="ico ico-top">📝</span>
+          <textarea id="aboutField" th:field="*{about}" placeholder="Tell us a little about yourself..."></textarea>
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <div class="terms">
+        <input type="checkbox" id="agree" name="agreement" value="true"/>
+        <label for="agree">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. Your data is encrypted and never shared.</label>
+      </div>
+
+      <button type="submit" class="btn-register" id="subBtn">Create Account →</button>
+      <div class="or-divider">already have an account?</div>
+      <p class="login-link"><a th:href="@{/login}">Sign in instead</a></p>
+
+    </form>
+  </div>
+
+  <!-- RIGHT: AI ASSISTANT -->
+  <div class="ai-col">
+    <div class="ai-box">
+      <div class="ai-head">
+        <div class="ai-ava">🤖</div>
+        <div class="ai-head-text">
+          <strong>AI Assistant</strong>
+          <small><span class="ai-dot"></span>Online · Spring AI + GPT</small>
+        </div>
+      </div>
+      <div class="chips">
+        <button class="chip" onclick="chip(this)">How do I add contacts?</button>
+        <button class="chip" onclick="chip(this)">Is my data secure?</button>
+        <button class="chip" onclick="chip(this)">What can this app do?</button>
+        <button class="chip" onclick="chip(this)">Password tips</button>
+      </div>
+      <div class="chat-msgs" id="chatMsgs">
+        <div class="msg msg-ai">👋 Hi! I'm your AI assistant powered by Spring AI &amp; OpenAI. Ask me anything about signing up or using Smart Contact Manager!</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-in" id="chatIn" type="text" placeholder="Ask me anything..."
+               onkeydown="if(event.key==='Enter')sendMsg()"/>
+        <button class="send-btn" onclick="sendMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* Password strength */
+  function calcStrength(v) {
+    let s=0;
+    if(v.length>=6)s++; if(v.length>=10)s++;
+    if(/[A-Z]/.test(v))s++; if(/[0-9]/.test(v))s++; if(/[^A-Za-z0-9]/.test(v))s++;
+    const L=[{w:'0%',c:'#eaedf3',t:'Enter a password'},{w:'25%',c:'#e53935',t:'Weak'},{w:'50%',c:'#f59e0b',t:'Fair'},{w:'75%',c:'#3b82f6',t:'Good'},{w:'90%',c:'#22c55e',t:'Strong'},{w:'100%',c:'#16a34a',t:'Very Strong ✓'}];
+    const l=L[Math.min(s,5)];
+    const f=document.getElementById('pwFill'); f.style.width=l.w; f.style.background=l.c;
+    const h=document.getElementById('pwHint'); h.textContent=l.t; h.style.color=l.c;
+  }
+
+  /* Toggle password visibility */
+  function togglePw(){ const f=document.getElementById('pwField'); f.type=(f.type==='password')?'text':'password'; }
+
+  /* Submit spinner */
+  document.getElementById('regForm').addEventListener('submit',function(){
+    const b=document.getElementById('subBtn'); b.textContent='Creating Account…'; b.disabled=true;
+  });
+
+  /* ── AI Chat ─────────────────────────────────────────────────────
+     FIX: fetch() must send the CSRF token in the header.
+     Spring Security rejects POST requests without it even for @ResponseBody endpoints.
+     We read the token from the meta tag injected by Thymeleaf.
+  ──────────────────────────────────────────────────────────────── */
+  const chatMsgs = document.getElementById('chatMsgs');
+
+
+
+  function addMsg(text, who) {
+    const d=document.createElement('div'); d.className='msg msg-'+who; d.textContent=text;
+    chatMsgs.appendChild(d); chatMsgs.scrollTop=chatMsgs.scrollHeight;
+  }
+  function showTyping() {
+    const d=document.createElement('div'); d.className='typing'; d.id='typing';
+    d.innerHTML='<span></span><span></span><span></span>';
+    chatMsgs.appendChild(d); chatMsgs.scrollTop=chatMsgs.scrollHeight;
+  }
+  function hideTyping(){ const t=document.getElementById('typing'); if(t)t.remove(); }
+
+  async function sendMsg() {
+    const inp=document.getElementById('chatIn');
+    const text=inp.value.trim(); if(!text)return;
+    addMsg(text,'user'); inp.value=''; showTyping();
+    try {
+      const res=await fetch('/ai/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body:'message='+encodeURIComponent(text)
+      });
+      hideTyping();
+      if(res.ok){ addMsg(await res.text(),'ai'); }
+      else{ addMsg('Server error ('+res.status+'). Please try again.','ai'); }
+    } catch(e){
+      hideTyping(); addMsg('Connection error. Is the server running?','ai');
+    }
+  }
+
+  function chip(btn){ document.getElementById('chatIn').value=btn.textContent.trim(); sendMsg(); }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

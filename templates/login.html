@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login – Smart Contact Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal:       #009688;
+            --teal-dark:  #00796b;
+            --teal-light: #b2dfdb;
+            --ink:        #1a2332;
+            --muted:      #64748b;
+            --surface:    #ffffff;
+            --bg:         #f0f7f6;
+            --danger:     #e53935;
+            --success:    #43a047;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+        }
+
+        /* ── LEFT PANEL ── */
+        .left-panel {
+            width: 52%;
+            position: relative;
+            background: var(--teal-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 4rem 4rem 5rem;
+            overflow: hidden;
+            color: #fff;
+        }
+        .left-panel::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                    radial-gradient(ellipse 80% 60% at 20% 80%, rgba(0,150,136,.55) 0%, transparent 70%),
+                    radial-gradient(ellipse 60% 40% at 90% 10%, rgba(0,105,92,.7) 0%, transparent 65%);
+        }
+        .ring {
+            position: absolute; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,.13);
+        }
+        .ring-1 { width: 520px; height: 520px; bottom: -180px; right: -180px; }
+        .ring-2 { width: 340px; height: 340px; bottom: -80px;  right: -80px;  border-color: rgba(255,255,255,.22); }
+        .ring-3 { width: 160px; height: 160px; bottom: 30px;   right: 30px;   border-color: rgba(255,255,255,.18); }
+        .left-content { position: relative; z-index: 2; }
+
+        .brand-badge {
+            display: inline-flex; align-items: center; gap: .55rem;
+            background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
+            border-radius: 40px; padding: .35rem 1rem .35rem .6rem;
+            font-size: .78rem; font-weight: 500; letter-spacing: .06em;
+            text-transform: uppercase; margin-bottom: 2rem; backdrop-filter: blur(6px);
+        }
+        .brand-badge .dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #80cbc4;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,100%{ opacity:1; transform:scale(1); }
+            50%    { opacity:.5; transform:scale(1.4); }
+        }
+
+        .left-panel h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+            line-height: 1.18; font-weight: 700; margin-bottom: 1.2rem;
+        }
+        .left-panel h1 em { font-style: italic; color: #80cbc4; }
+        .left-panel p {
+            font-size: 1rem; color: rgba(255,255,255,.75);
+            line-height: 1.7; max-width: 380px; margin-bottom: 2.5rem;
+        }
+        .feature-list { list-style: none; display: flex; flex-direction: column; gap: .9rem; }
+        .feature-list li {
+            display: flex; align-items: center; gap: .75rem;
+            font-size: .92rem; color: rgba(255,255,255,.85);
+        }
+        .feature-list li::before {
+            content: ''; width: 22px; height: 22px; flex-shrink: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,.15) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/12px no-repeat;
+            border: 1.5px solid rgba(255,255,255,.3);
+        }
+
+        /* ── RIGHT PANEL ── */
+        .right-panel {
+            flex: 1; display: flex; align-items: center;
+            justify-content: center; padding: 2rem;
+            position: relative; background: var(--surface);
+        }
+        .right-panel::before {
+            content: ''; position: absolute; top: -60px; right: -60px;
+            width: 260px; height: 260px; border-radius: 50%;
+            background: radial-gradient(circle, var(--teal-light) 0%, transparent 70%);
+            opacity: .35;
+        }
+
+        /* ── LOGIN CARD ── */
+        .login-card {
+            width: 100%; max-width: 420px;
+            position: relative; z-index: 2;
+            animation: slideUp .5s ease both;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem; color: var(--ink); margin-bottom: .35rem;
+        }
+        .login-card .subtitle { font-size: .9rem; color: var(--muted); margin-bottom: 2rem; }
+
+        /* Flash alerts */
+        .alert-box {
+            padding: .75rem 1rem; border-radius: 10px;
+            margin-bottom: 1.2rem; font-size: .875rem;
+            display: flex; align-items: center; gap: .5rem;
+            border-left: 3px solid;
+        }
+        .alert-danger  { background: #fdecea; border-color: var(--danger);  color: #c62828; }
+        .alert-success { background: #e8f5e9; border-color: var(--success); color: #2e7d32; }
+        .alert-warning { background: #fffbeb; border-color: #f59e0b;        color: #78350f; }
+
+        /* Fields */
+        .field-group { margin-bottom: 1.2rem; }
+        .field-group label {
+            display: block; font-size: .82rem; font-weight: 500;
+            color: var(--ink); margin-bottom: .45rem; letter-spacing: .03em;
+        }
+        .field-wrap { position: relative; }
+        .field-wrap .field-icon {
+            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+            color: var(--muted); pointer-events: none; font-size: 1rem;
+        }
+        .field-wrap input {
+            width: 100%;
+            padding: .8rem 1rem .8rem 2.75rem;
+            border: 1.5px solid #dde3ec; border-radius: 12px;
+            font-family: 'DM Sans', sans-serif; font-size: .93rem;
+            color: var(--ink); background: #fafbfc;
+            transition: border-color .2s, box-shadow .2s; outline: none;
+        }
+        .field-wrap input:focus {
+            border-color: var(--teal); background: #fff;
+            box-shadow: 0 0 0 4px rgba(0,150,136,.1);
+        }
+        .field-wrap input::placeholder { color: #b0bac7; }
+
+        .toggle-pw {
+            position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer;
+            color: var(--muted); font-size: .95rem; padding: 0;
+        }
+
+        .options-row {
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 1.5rem;
+        }
+        .remember-check {
+            display: flex; align-items: center; gap: .45rem;
+            font-size: .85rem; color: var(--muted); cursor: pointer;
+        }
+        .remember-check input[type="checkbox"] {
+            accent-color: var(--teal); width: 16px; height: 16px;
+        }
+        .forgot-link {
+            font-size: .85rem; color: var(--teal);
+            text-decoration: none; font-weight: 500;
+        }
+        .forgot-link:hover { text-decoration: underline; }
+
+        /* Submit */
+        .btn-login {
+            width: 100%; padding: .9rem;
+            background: var(--teal); color: #fff; border: none;
+            border-radius: 12px; font-family: 'DM Sans', sans-serif;
+            font-size: 1rem; font-weight: 500; cursor: pointer;
+            position: relative; overflow: hidden;
+            transition: background .2s, transform .15s, box-shadow .2s;
+            box-shadow: 0 4px 15px rgba(0,150,136,.35);
+        }
+        .btn-login:hover {
+            background: var(--teal-dark); transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0,150,136,.45);
+        }
+        .btn-login:active { transform: translateY(0); }
+
+        .divider {
+            display: flex; align-items: center; gap: .75rem;
+            margin: 1.4rem 0; color: #b0bac7; font-size: .8rem;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: #eaedf2;
+        }
+        .register-cta { text-align: center; font-size: .88rem; color: var(--muted); }
+        .register-cta a { color: var(--teal); font-weight: 500; text-decoration: none; }
+        .register-cta a:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .left-panel { width: 100%; padding: 2.5rem 2rem; min-height: 240px; }
+            .ring-1,.ring-2,.ring-3,.feature-list { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="left-content">
+        <div class="brand-badge"><span class="dot"></span> Smart Contact Manager</div>
+        <h1>Your Contacts,<br><em>beautifully</em> organised.</h1>
+        <p>Store, manage, and access all your important Contacts from anywhere. Simple, secure, and always in sync.</p>
+        <ul class="feature-list">
+            <li>Manage unlimited Contacts effortlessly</li>
+            <li>Secure login with Spring Security</li>
+            <li>Fast search &amp; intuitive dashboard</li>
+            <li>Access from any device, anytime</li>
+        </ul>
+    </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+    <div class="login-card">
+
+        <h2>Welcome back</h2>
+        <p class="subtitle">Sign in to your account to continue</p>
+
+        <!-- Spring Security sets ?error or ?logout on redirect -->
+        <div th:if="${param.error}"  class="alert-box alert-danger">
+            ⚠ Invalid email or password. Please try again.
+        </div>
+        <div th:if="${param.logout}" class="alert-box alert-success">
+            ✓ You have been logged out successfully.
+        </div>
+
+        <!-- Flash message set by controller (e.g. after signup success) -->
+        <div th:if="${session.message != null}"
+             th:class="${session.message.type == 'alert-danger'}  ? 'alert-box alert-danger'  :
+                   (session.message.type == 'alert-warning' ? 'alert-box alert-warning' :
+                                                              'alert-box alert-success')">
+            <span th:text="${session.message.content}">Message</span>
+        </div>
+
+        <!--
+          th:action="@{/login}" automatically injects ONE _csrf hidden input.
+          Do NOT add a second manual _csrf input — that causes duplicate tokens.
+        -->
+        <form th:action="@{/login}" method="post" autocomplete="off">
+
+            <div class="field-group">
+                <label for="username">Email Address</label>
+                <div class="field-wrap">
+                    <span class="field-icon">✉</span>
+                    <input type="email"
+                           id="username"
+                           name="username"
+                           placeholder="you@example.com"
+                           required
+                           autocomplete="username"/>
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label for="password">Password</label>
+                <div class="field-wrap">
+                    <span class="field-icon">🔒</span>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           placeholder="Enter your password"
+                           required
+                           autocomplete="current-password"/>
+                    <button type="button" class="toggle-pw"
+                            onclick="togglePw()" aria-label="Toggle password">👁</button>
+                </div>
+            </div>
+
+            <div class="options-row">
+                <label class="remember-check">
+                    <input type="checkbox" name="remember-me"/> Remember me
+                </label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+
+        <div class="divider">or</div>
+        <p class="register-cta">
+            Don't have an account? <a th:href="@{/signup}">Create one free</a>
+        </p>
+
+    </div>
+</div>
+
+<script>
+    function togglePw() {
+        const pw = document.getElementById('password');
+        pw.type = pw.type === 'password' ? 'text' : 'password';
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<head><title>Dashboard</title></head>
+<body>
+<section>
+    <style>
+        .dash-page { background: #f4f9f8; min-height: 90vh; padding: 2rem 0; }
+        .stat-card { background:#fff; border-radius:14px; padding:1.5rem; border:1px solid #e2e8f0; text-align:center; }
+        .stat-card .stat-num { font-size:2.4rem; font-weight:700; color:#009688; font-family:'Playfair Display',serif; }
+        .stat-card .stat-lbl { font-size:.85rem; color:#64748b; margin-top:.25rem; }
+        .section-hd { font-family:'Playfair Display',serif; font-size:1.3rem; color:#1a2332; margin-bottom:1rem; }
+        .contact-row { display:flex; align-items:center; gap:.85rem; padding:.85rem 1rem; background:#fff; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:.6rem; transition:box-shadow .2s; }
+        .contact-row:hover { box-shadow:0 4px 16px rgba(0,150,136,.1); }
+        .c-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#009688,#00796b); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:1.1rem; flex-shrink:0; }
+        .c-name { font-weight:600; font-size:.95rem; color:#1a2332; }
+        .c-sub  { font-size:.8rem; color:#64748b; }
+        .btn-teal { background:#009688; color:#fff; border:none; padding:.55rem 1.2rem; border-radius:9px; font-size:.875rem; font-weight:500; text-decoration:none; transition:background .2s; display:inline-block; }
+        .btn-teal:hover { background:#00796b; color:#fff; }
+        .welcome-card { background:linear-gradient(135deg,#00796b,#009688); border-radius:18px; padding:2rem; color:#fff; margin-bottom:2rem; }
+        .welcome-card h2 { font-family:'Playfair Display',serif; font-size:1.8rem; margin-bottom:.4rem; }
+        .welcome-card p { color:rgba(255,255,255,.8); font-size:.95rem; margin:0; }
+        .fav-star { color:#f59e0b; font-size:.9rem; margin-left:auto; }
+    </style>
+
+    <div class="dash-page">
+        <div class="container">
+
+            <!-- Welcome banner -->
+            <div class="welcome-card">
+                <h2>Welcome back, <span th:text="${user.name}">User</span>! 👋</h2>
+                <p>You have <strong th:text="${totalContacts}">0</strong> contacts saved · <strong th:text="${favourites}">0</strong> favourited</p>
+            </div>
+
+            <!-- Stats row -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-num" th:text="${totalContacts}">0</div>
+                        <div class="stat-lbl">Total Contacts</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-num" th:text="${favourites}">0</div>
+                        <div class="stat-lbl">Favourites ⭐</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-num" th:text="${user.name.length() > 0 ? '✓' : '✗'}">✓</div>
+                        <div class="stat-lbl">Profile Active</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-num">🤖</div>
+                        <div class="stat-lbl">AI Assistant</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Recent contacts -->
+                <div class="col-lg-7">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="section-hd mb-0">Recent Contacts</h3>
+                        <a th:href="@{/user/add-contact}" class="btn-teal">+ Add Contact</a>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(recentContacts)}">
+                        <div style="text-align:center;padding:3rem 1rem;background:#fff;border-radius:14px;border:1px solid #e2e8f0;">
+                            <div style="font-size:3rem;margin-bottom:1rem">📇</div>
+                            <p style="color:#64748b;margin-bottom:1rem">No contacts yet. Add your first one!</p>
+                            <a th:href="@{/user/add-contact}" class="btn-teal">Add Your First Contact</a>
+                        </div>
+                    </div>
+
+                    <div th:each="contact : ${recentContacts}">
+                        <a th:href="@{/user/contact/{id}(id=${contact.cId})}" style="text-decoration:none">
+                            <div class="contact-row">
+                                <div class="c-avatar" th:text="${#strings.substring(contact.name,0,1).toUpperCase()}">A</div>
+                                <div>
+                                    <div class="c-name" th:text="${contact.name}">Name</div>
+                                    <div class="c-sub" th:text="${contact.email ?: contact.phone ?: 'No details'}">email</div>
+                                </div>
+                                <span class="fav-star" th:if="${contact.favourite}">⭐</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div th:if="${!#lists.isEmpty(recentContacts)}" style="margin-top:1rem">
+                        <a th:href="@{/user/contacts}" style="color:#009688;font-size:.875rem;font-weight:500;text-decoration:none">View all contacts →</a>
+                    </div>
+                </div>
+
+                <!-- Quick actions -->
+                <div class="col-lg-5">
+                    <h3 class="section-hd">Quick Actions</h3>
+                    <div style="display:flex;flex-direction:column;gap:.75rem">
+                        <a th:href="@{/user/add-contact}" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:#fff;border-radius:12px;border:1px solid #e2e8f0;text-decoration:none;color:#1a2332;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,150,136,.12)'" onmouseout="this.style.boxShadow='none'">
+                            <span style="font-size:1.5rem">➕</span>
+                            <div><div style="font-weight:600;font-size:.92rem">Add New Contact</div><div style="font-size:.78rem;color:#64748b">Save a new person</div></div>
+                        </a>
+                        <a th:href="@{/user/contacts}" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:#fff;border-radius:12px;border:1px solid #e2e8f0;text-decoration:none;color:#1a2332;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,150,136,.12)'" onmouseout="this.style.boxShadow='none'">
+                            <span style="font-size:1.5rem">📋</span>
+                            <div><div style="font-weight:600;font-size:.92rem">View All Contacts</div><div style="font-size:.78rem;color:#64748b">Browse &amp; search</div></div>
+                        </a>
+                        <a th:href="@{/user/profile}" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:#fff;border-radius:12px;border:1px solid #e2e8f0;text-decoration:none;color:#1a2332;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,150,136,.12)'" onmouseout="this.style.boxShadow='none'">
+                            <span style="font-size:1.5rem">👤</span>
+                            <div><div style="font-weight:600;font-size:.92rem">My Profile</div><div style="font-size:.78rem;color:#64748b">View &amp; edit your info</div></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+</body>
+</html>
